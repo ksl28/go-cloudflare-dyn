@@ -9,7 +9,7 @@ This Go program interacts with the Cloudflare API to monitor and update DNS reco
 - Periodically refreshes to recheck and update DNS records based on a configurable time interval.
 
 ## Requirements
-- Go 1.18+.
+- Go 1.23+.
 - A Cloudflare account and API key.
 - A Cloudflare zone ID.
 
