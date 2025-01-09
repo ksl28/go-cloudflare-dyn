@@ -18,6 +18,7 @@ type DNSRecord struct {
 	Name    string `json:"name"`
 	Content string `json:"content"`
 	TTL     int    `json:"ttl"`
+	Proxied bool   `json:"proxied"`
 }
 
 type Response struct {
@@ -75,7 +76,7 @@ func getCurrentPublicIP() (string, error) {
 	return strings.TrimSpace(string(body)), nil
 }
 
-func updateDNS(recordID, zoneID, recordType, recordName, recordContent string, recordTTL int, apiKey string) {
+func updateDNS(recordID, zoneID, recordType, recordName, recordContent string, recordTTL int, recordProxied bool, apiKey string) {
 	cloudUrl := fmt.Sprintf("https://api.cloudflare.com/client/v4/zones/%s/dns_records/%s", zoneID, recordID)
 
 	body := DNSRecord{
@@ -83,6 +84,7 @@ func updateDNS(recordID, zoneID, recordType, recordName, recordContent string, r
 		Name:    recordName,
 		Content: recordContent,
 		TTL:     recordTTL,
+		Proxied: recordProxied,
 	}
 
 	jsonBody, err := json.Marshal(body)
@@ -143,7 +145,7 @@ func main() {
 				if record.Name == validEntry {
 					if record.Content != currentIP {
 						log.Printf("The record %s is not correct", record.Name)
-						updateDNS(record.ID, zoneID, record.Type, record.Name, currentIP, record.TTL, apiKey)
+						updateDNS(record.ID, zoneID, record.Type, record.Name, currentIP, record.TTL, record.Proxied, apiKey)
 					}
 				}
 			}
